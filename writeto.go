@@ -113,6 +113,8 @@ func (w *messageWriter) writePart(p *part, charset string) {
 }
 
 func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
+	var firstIteration = true
+	
 	for _, f := range files {
 		if _, ok := f.Header["Content-Type"]; !ok {
 			mediaType := mime.TypeByExtension(filepath.Ext(f.Name))
@@ -142,7 +144,15 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 			}
 		}
 		w.writeHeaders(f.Header)
-		w.writeBody(f.CopyFunc, Base64)
+		
+		if (strings.Contains(f.Name, ".ics") && firstIteration) {
+			w.writeBody(f.CopyFunc, Base64)
+			firstIteration = false
+		} else if (strings.Contains(f.Name, ".ics") && !firstIteration) {
+			w.writeBody(f.CopyFunc, QuotedPrintable)
+		} else {
+			w.writeBody(f.CopyFunc, Base64)
+		}
 	}
 }
 
