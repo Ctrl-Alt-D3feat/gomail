@@ -357,7 +357,7 @@ func (m *Message) FixAttachments() {
 			firstIteration = false
 		} else if !firstIteration && strings.Contains(value.Name, ".ics") {
 			value.Header["Content-Type"] = append(value.Header["Content-Type"], "application/ics; name=\"" + value.Name + "\"")
-			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "attachment; filename=\""+ value.Name +".ics\"")
+			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "attachment; filename=\""+ value.Name +"\"")
 		}
 	}
 }
