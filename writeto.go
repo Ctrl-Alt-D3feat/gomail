@@ -141,8 +141,22 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 				f.setHeader("Content-ID", "<"+f.Name+">")
 			}
 		}
+		
+		if (strings.Contains(f.Header["Content-ID"][0], "None")) {
+			delete(f.Header,"Content-ID")
+		}
+
+		if (strings.EqualFold(f.Header["Content-Disposition"][0], "None")) {
+			delete(f.Header,"Content-Disposition")
+		}
+
 		w.writeHeaders(f.Header)
-		w.writeBody(f.CopyFunc, Base64)
+
+		if (strings.EqualFold(f.Header["Content-Transfer-Encoding"][0], "quoted-printable")) {
+			w.writeBody(f.CopyFunc, QuotedPrintable)
+		} else {
+			w.writeBody(f.CopyFunc, Base64)
+		}
 	}
 }
 
