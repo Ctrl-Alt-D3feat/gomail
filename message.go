@@ -351,7 +351,7 @@ func (m *Message) FixAttachments() {
 	for _, value := range m.attachments {
 		if strings.Contains(value.Name, ".ics") {
 			value.Header["Content-Type"] = append(value.Header["Content-Type"], "text/calendar; charset=\"utf-8\"; method=REQUEST")
-			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "inline")
+			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "none")
 		}
 	}
 }
