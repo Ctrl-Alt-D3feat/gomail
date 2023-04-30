@@ -140,10 +140,10 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 			if _, ok := f.Header["Content-ID"]; !ok {
 				f.setHeader("Content-ID", "<"+f.Name+">")
 			}
-		}
-		
-		if (strings.Contains(f.Header["Content-ID"][0], "None")) {
-			delete(f.Header,"Content-ID")
+			
+			if (strings.Contains(f.Header["Content-ID"][0], "None")) {
+				delete(f.Header,"Content-ID")
+			}
 		}
 
 		if (strings.EqualFold(f.Header["Content-Disposition"][0], "None")) {
