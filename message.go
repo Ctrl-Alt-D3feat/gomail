@@ -348,14 +348,15 @@ func (m *Message) appendFile(list []*file, f *file, settings []FileSetting) []*f
 }
 
 func (m *Message) FixAttachments() {
-	var firstIteration = true
 	for _, value := range m.attachments {
-		if firstIteration && strings.Contains(value.Name, ".ics") {
+		if strings.Contains(value.Name, ".ics") {
 			value.Header["Content-Type"] = append(value.Header["Content-Type"], "text/calendar; charset=\"utf-8\"; method=REQUEST")
 			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "inline")
+		}
+	}
 
-			firstIteration = false
-		} else if !firstIteration && strings.Contains(value.Name, ".ics") {
+	for _, value := range m.embedded {
+		if strings.Contains(value.Name, ".ics") {
 			value.Header["Content-Type"] = append(value.Header["Content-Type"], "application/ics; name=\"" + value.Name + "\"")
 			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "attachment; filename=\""+ value.Name +"\"")
 		}
