@@ -112,9 +112,7 @@ func (w *messageWriter) writePart(p *part, charset string) {
 	w.writeBody(p.copier, p.encoding)
 }
 
-func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
-	var firstIteration = true
-	
+func (w *messageWriter) addFiles(files []*file, isAttachment bool) {	
 	for _, f := range files {
 		if _, ok := f.Header["Content-Type"]; !ok {
 			mediaType := mime.TypeByExtension(filepath.Ext(f.Name))
@@ -124,18 +122,8 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 			f.setHeader("Content-Type", mediaType+`; name="`+f.Name+`"`)
 		}
 
-		if (strings.Contains(f.Name, ".ics") && firstIteration) {
-			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
-				f.setHeader("Content-Transfer-Encoding", string(Base64))
-			}
-		} else if (strings.Contains(f.Name, ".ics") && firstIteration) {
-			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
-				f.setHeader("Content-Transfer-Encoding", "quoted-printable")
-			}
-		} else {
-			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
-				f.setHeader("Content-Transfer-Encoding", string(Base64))
-			}
+		if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
+			f.setHeader("Content-Transfer-Encoding", string(Base64))
 		}
 
 		if _, ok := f.Header["Content-Disposition"]; !ok {
@@ -154,15 +142,7 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 			}
 		}
 		w.writeHeaders(f.Header)
-		
-		if (strings.Contains(f.Name, ".ics") && firstIteration) {
-			w.writeBody(f.CopyFunc, Base64)
-			firstIteration = false
-		} else if (strings.Contains(f.Name, ".ics") && !firstIteration) {
-			w.writeBody(f.CopyFunc, QuotedPrintable)
-		} else {
-			w.writeBody(f.CopyFunc, Base64)
-		}
+		w.writeBody(f.CopyFunc, Base64)
 	}
 }
 
