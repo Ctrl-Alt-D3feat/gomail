@@ -124,8 +124,18 @@ func (w *messageWriter) addFiles(files []*file, isAttachment bool) {
 			f.setHeader("Content-Type", mediaType+`; name="`+f.Name+`"`)
 		}
 
-		if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
-			f.setHeader("Content-Transfer-Encoding", string(Base64))
+		if (strings.Contains(f.Name, ".ics") && firstIteration) {
+			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
+				f.setHeader("Content-Transfer-Encoding", string(Base64))
+			}
+		} else if (strings.Contains(f.Name, ".ics") && firstIteration) {
+			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
+				f.setHeader("Content-Transfer-Encoding", "quoted-printable")
+			}
+		} else {
+			if _, ok := f.Header["Content-Transfer-Encoding"]; !ok {
+				f.setHeader("Content-Transfer-Encoding", string(Base64))
+			}
 		}
 
 		if _, ok := f.Header["Content-Disposition"]; !ok {
