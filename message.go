@@ -350,19 +350,19 @@ func (m *Message) appendFile(list []*file, f *file, settings []FileSetting) []*f
 func (m *Message) FixAttachments() {
 	for _, value := range m.attachments {
 		if strings.Contains(value.Name, ".ics") {
-			value.Header["Content-Type"] = append(value.Header["Content-Type"], "text/calendar; charset=\"utf-8\"; method=REQUEST")
-			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "None")
+			value.Header["Content-Type"] = append(value.Header["Content-Type"], "application/ics; name=\"" + value.Name + "\"")
+			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "attachment; filename=\""+ value.Name +"\"")
 			value.Header["Content-ID"] = append(value.Header["Content-ID"], "None")
-			value.Header["Content-Transfer-Encoding"] = append(value.Header["Content-Transfer-Encoding"], "quoted-printable")
+			value.Header["Content-Transfer-Encoding"] = append(value.Header["Content-Transfer-Encoding"], "base64")
 		}
 	}
 
 	for _, value := range m.embedded {
 		if strings.Contains(value.Name, ".ics") {
-			value.Header["Content-Type"] = append(value.Header["Content-Type"], "application/ics; name=\"" + value.Name + "\"")
-			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "attachment; filename=\""+ value.Name +"\"")
+			value.Header["Content-Type"] = append(value.Header["Content-Type"], "text/calendar; charset=\"utf-8\"; method=REQUEST")
+			value.Header["Content-Disposition"] = append(value.Header["Content-Disposition"], "None")
 			value.Header["Content-ID"] = append(value.Header["Content-ID"], "None")
-			value.Header["Content-Transfer-Encoding"] = append(value.Header["Content-Transfer-Encoding"], "base64")
+			value.Header["Content-Transfer-Encoding"] = append(value.Header["Content-Transfer-Encoding"], "quoted-printable")
 		}
 	}
 }
